@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Алхимия: Мега Версия</title>
+   <style>
+       * { box-sizing: border-box; }
+       body {
+           font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+           background: #121214;
+           color: #e1e1e6;
+           margin: 0;
+           padding: 0;
+           display: flex;
+           height: 100vh;
+           overflow: hidden;
+       }
+       .sidebar {
+           width: 380px;
+           background: #202024;
+           border-right: 1px solid #323238;
+           display: flex;
+           flex-direction: column;
+           padding: 20px;
+       }
+       h2 { margin-top: 0; font-size: 1.2rem; color: #00b37e; display: flex; justify-content: space-between; align-items: center; }
+       .stats { font-size: 0.8rem; color: #8d8d99; }
+       
+       .search-box {
+           width: 100%;
+           padding: 10px;
+           background: #121214;
+           border: 1px solid #323238;
+           border-radius: 8px;
+           color: #e1e1e6;
+           margin-bottom: 12px;
+           font-size: 0.9rem;
+       }
+       .search-box:focus { border-color: #00b37e; outline: none; }
+
+       .elements-list {
+           flex: 1;
+           overflow-y: auto;
+           display: flex;
+           flex-direction: column;
+           gap: 8px;
+           padding-right: 5px;
+       }
+       .element-btn {
+           background: #29292e;
+           border: 1px solid #323238;
+           color: #e1e1e6;
+           padding: 10px 15px;
+           border-radius: 8px;
+           cursor: pointer;
+           text-align: left;
+           transition: 0.2s;
+           font-size: 0.95rem;
+       }
+       .element-btn:hover {
+           background: #323238;
+           border-color: #00b37e;
+       }
+       .main-field {
+           flex: 1;
+           display: flex;
+           flex-direction: column;
+           padding: 30px;
+           position: relative;
+       }
+       .workspace {
+           flex: 1;
+           background: #1a1a1e;
+           border: 2px dashed #323238;
+           border-radius: 16px;
+           display: flex;
+           justify-content: center;
+           align-items: center;
+           gap: 30px;
+           position: relative;
+       }
+       .slot {
+           width: 140px;
+           height: 140px;
+           background: #25252b;
+           border: 2px solid #323238;
+           border-radius: 12px;
+           display: flex;
+           justify-content: center;
+           align-items: center;
+           text-align: center;
+           font-weight: bold;
+           padding: 10px;
+           cursor: pointer;
+           transition: 0.2s;
+           font-size: 1.1rem;
+       }
+       .slot.filled {
+           border-color: #00b37e;
+           background: #004d33;
+       }
+       .controls {
+           margin-top: 20px;
+           display: flex;
+           gap: 15px;
+           justify-content: space-between;
+       }
+       .left-controls, .right-controls {
+           display: flex;
+           gap: 15px;
+       }
+       .action-btn {
+           background: #00b37e;
+           color: white;
+           border: none;
+           padding: 12px 24px;
+           border-radius: 8px;
+           font-weight: bold;
+           cursor: pointer;
+           transition: 0.2s;
+       }
+       .action-btn:hover { background: #00875f; }
+       .action-btn.secondary { background: #29292e; border: 1px solid #323238; }
+       .action-btn.secondary:hover { background: #323238; }
+       .action-btn.danger { background: #571e22; border: 1px solid #7a282d; }
+       .action-btn.danger:hover { background: #7a282d; }
+       .message {
+           margin-top: 15px;
+           height: 24px;
+           font-size: 1rem;
+           color: #fba94c;
+       }
+   </style>
+</head>
+<body>
+
+   <div class="sidebar">
+       <h2>Алхимия <span class="stats" id="stats">0 / 0</span></h2>
+       <input type="text" class="search-box" id="searchBox" placeholder="Поиск элементов..." oninput="filterElements()">
+       <div class="elements-list" id="elementsList"></div>
+   </div>
+
+   <div class="main-field">
+       <div class="workspace">
+           <div class="slot" id="slot1" onclick="clearSlot(1)">Пусто</div>
+           <span style="font-size: 2rem; color: #8d8d99;">+</span>
+           <div class="slot" id="slot2" onclick="clearSlot(2)">Пусто</div>
+       </div>
+       <div class="message" id="message">Собери все элементы и построй свою вселенную!</div>
+       <div class="controls">
+           <div class="left-controls">
+               <button class="action-btn" onclick="mixElements()">Смешать</button>
+               <button class="action-btn secondary" onclick="resetWorkspace()">Очистить стол</button>
+           </div>
+           <div class="right-controls">
+               <button class="action-btn danger" onclick="resetProgress()" title="Сбросить прогресс">Сброс</button>
+           </div>
+       </div>
+   </div>
+
+<script>
+   const elements = {
+       'Вода': { name: '💧 Вода', unlocked: true },
+       'Огонь': { name: '🔥 Огонь', unlocked: true },
+       'Земля': { name: '🌍 Земля', unlocked: true },
+       'Воздух': { name: '💨 Воздух', unlocked: true },
+       'Пар': { name: '♨️ Пар', unlocked: false },
+       'Лава': { name: '🌋 Лава', unlocked: false },
+       'Грязь': { name: '💩 Грязь', unlocked: false },
+       'Пыль': { name: '🌪️ Пыль', unlocked: false },
+       'Камень': { name: '🪨 Камень', unlocked: false },
+       'Песок': { name: '⏳ Песок', unlocked: false },
+       'Энергия': { name: '⚡ Энергия', unlocked: false },
+       'Металл': { name: '⚙️ Металл', unlocked: false },
+       'Стекло': { name: '🔍 Стекло', unlocked: false },
+       'Уголь': { name: '⬛ Уголь', unlocked: false },
+       'Алмаз': { name: '💎 Алмаз', unlocked: false },
+       'Жизнь': { name: '🌱 Жизнь', unlocked: false },
+       'Бактерия': { name: '🦠 Бактерия', unlocked: false },
+       'Трава': { name: '🌾 Трава', unlocked: false },
+       'Дерево': { name: '🌳 Дерево', unlocked: false },
+       'Цветок': { name: '🌷 Цветок', unlocked: false },
+       'Кирпич': { name: '🧱 Кирпич', unlocked: false },
+       'Дом': { name: '🏠 Дом', unlocked: false },
+       'Электричество': { name: '💡 Электричество', unlocked: false },
+       'Компьютер': { name: '💻 Компьютер', unlocked: false }
+   };
+
+   const recipes = {
+       'Вода+Огонь': 'Пар',
+       'Огонь+Земля': 'Лава',
+       'Вода+Земля': 'Грязь',
+       'Воздух+Земля': 'Пыль',
+       'Лава+Воздух': 'Камень',
+       'Огонь+Воздух': 'Энергия',
+       'Вода+Камень': 'Песок',
+       'Огонь+Песок': 'Стекло',
+       'Земля+Огонь': 'Уголь',
+       'Уголь+Уголь': 'Алмаз',
+       'Грязь+Энергия': 'Жизнь',
+       'Вода+Жизнь': 'Бактерия',
+       'Земля+Жизнь': 'Трава',
+       'Трава+Земля': 'Дерево',
+       'Цветок+Вода': 'Цветок',
+       'Кирпич+Кирпич': 'Дом',
+       'Уголь+Огонь': 'Электричество',
+       'Электричество+Пластик': 'Компьютер'
+   };
+
+   let selected1 = null;
+   let selected2 = null;
+
+   function loadGame() {
+       const saved = localStorage.getItem('alchemy_unlocked');
+       if (saved) {
+           const unlockedList = JSON.parse(saved);
+           unlockedList.forEach(key => {
+               if (elements[key]) elements[key].unlocked = true;
+           });
+       }
+   }
+
+   function saveGame() {
+       const unlockedList = [];
+       for (let key in elements) {
+           if (elements[key].unlocked) unlockedList.push(key);
+       }
+       localStorage.setItem('alchemy_unlocked', JSON.stringify(unlockedList));
+   }
+
+   function updateSidebar() {
+       const list = document.getElementById('elementsList');
+       const filter = document.getElementById('searchBox').value.toLowerCase();
+       list.innerHTML = '';
+       
+       let unlockedCount = 0;
+       let totalCount = Object.keys(elements).length;
+
+       for (let key in elements) {
+           if (elements[key].unlocked) {
+               unlockedCount++;
+               if (elements[key].name.toLowerCase().includes(filter)) {
+                   const btn = document.createElement('button');
+                   btn.className = 'element-btn';
+                   btn.innerText = elements[key].name;
+                   btn.onclick = () => selectElement(key);
+                   list.appendChild(btn);
+               }
+           }
+       }
+       document.getElementById('stats').innerText = `${unlockedCount} / ${totalCount}`;
+   }
+
+   function filterElements() {
+       updateSidebar();
+   }
+
+   function selectElement(key) {
+       if (!selected1) {
+           selected1 = key;
+           document.getElementById('slot1').innerText = elements[key].name;
+           document.getElementById('slot1').classList.add('filled');
+       } else if (!selected2 && selected1 !== key) {
+           selected2 = key;
+           document.getElementById('slot2').innerText = elements[key].name;
+           document.getElementById('slot2').classList.add('filled');
+       } else {
+           selected1 = key;
+           selected2 = null;
+           document.getElementById('slot1').innerText = elements[key].name;
+           document.getElementById('slot1').classList.add('filled');
+           document.getElementById('slot2').innerText = 'Пусто';
+           document.getElementById('slot2').classList.remove('filled');
+       }
+       document.getElementById('message').innerText = '';
+   }
+
+   function clearSlot(slotNum) {
+       if (slotNum === 1) {
+           selected1 = null;
+           document.getElementById('slot1').innerText = 'Пусто';
+           document.getElementById('slot1').classList.remove('filled');
+       } else {
+           selected2 = null;
+           document.getElementById('slot2').innerText = 'Пусто';
+           document.getElementById('slot2').classList.remove('filled');
+       }
+   }
+
+   function resetWorkspace() {
+       clearSlot(1);
+       clearSlot(2);
+       document.getElementById('message').innerText = '';
+   }
+
+   function mixElements() {
+       const msg = document.getElementById('message');
+       if (!selected1 || !selected2) {
+           msg.innerText = 'Выберите два элемента для смешивания!';
+           return;
+       }
+
+       const key1 = `${selected1}+${selected2}`;
+       const key2 = `${selected2}+${selected1}`;
+       let result = recipes[key1] || recipes[key2];
+
+       if (result && elements[result]) {
+           if (!elements[result].unlocked) {
+               elements[result].unlocked = true;
+               msg.style.color = '#00b37e';
+               msg.innerText = `🎉 Открыт новый элемент: ${elements[result].name}!`;
+               saveGame();
+               updateSidebar();
+           } else {
+               msg.style.color = '#fba94c';
+               msg.innerText = `Элемент уже открыт: ${elements[result].name}`;
+           }
+       } else {
+           msg.style.color = '#f75a68';
+           msg.innerText = '💥 Ничего не получилось... Попробуй другую комбинацию.';
+       }
+       
+       resetWorkspace();
+   }
+
+   function resetProgress() {
+       if (confirm('Сбросить весь прогресс?')) {
+           localStorage.removeItem('alchemy_unlocked');
+           for (let key in elements) {
+               elements[key].unlocked = ['Вода', 'Огонь', 'Земля', 'Воздух'].includes(key);
+           }
+           updateSidebar();
+           resetWorkspace();
+           document.getElementById('message').innerText = 'Прогресс сброшен.';
+       }
+   }
+
+   loadGame();
+   updateSidebar();
+</script>
+
+</body>
+</html>
