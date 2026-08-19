@@ -1,343 +1,686 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Алхимия: Мега Версия</title>
-   <style>
-       * { box-sizing: border-box; }
-       body {
-           font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-           background: #121214;
-           color: #e1e1e6;
-           margin: 0;
-           padding: 0;
-           display: flex;
-           height: 100vh;
-           overflow: hidden;
-       }
-       .sidebar {
-           width: 380px;
-           background: #202024;
-           border-right: 1px solid #323238;
-           display: flex;
-           flex-direction: column;
-           padding: 20px;
-       }
-       h2 { margin-top: 0; font-size: 1.2rem; color: #00b37e; display: flex; justify-content: space-between; align-items: center; }
-       .stats { font-size: 0.8rem; color: #8d8d99; }
-       
-       .search-box {
-           width: 100%;
-           padding: 10px;
-           background: #121214;
-           border: 1px solid #323238;
-           border-radius: 8px;
-           color: #e1e1e6;
-           margin-bottom: 12px;
-           font-size: 0.9rem;
-       }
-       .search-box:focus { border-color: #00b37e; outline: none; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Алхимия: Мега Версия</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #121214;
+            color: #e1e1e6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 380px;
+            background: #202024;
+            border-right: 1px solid #323238;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        h2 { margin-top: 0; font-size: 1.2rem; color: #00b37e; display: flex; justify-content: space-between; align-items: center; }
+        .stats { font-size: 0.8rem; color: #8d8d99; }
+        
+        .search-box {
+            width: 100%;
+            padding: 10px;
+            background: #121214;
+            border: 1px solid #323238;
+            border-radius: 8px;
+            color: #e1e1e6;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+        }
+        .search-box:focus { border-color: #00b37e; outline: none; }
 
-       .elements-list {
-           flex: 1;
-           overflow-y: auto;
-           display: flex;
-           flex-direction: column;
-           gap: 8px;
-           padding-right: 5px;
-       }
-       .element-btn {
-           background: #29292e;
-           border: 1px solid #323238;
-           color: #e1e1e6;
-           padding: 10px 15px;
-           border-radius: 8px;
-           cursor: pointer;
-           text-align: left;
-           transition: 0.2s;
-           font-size: 0.95rem;
-       }
-       .element-btn:hover {
-           background: #323238;
-           border-color: #00b37e;
-       }
-       .main-field {
-           flex: 1;
-           display: flex;
-           flex-direction: column;
-           padding: 30px;
-           position: relative;
-       }
-       .workspace {
-           flex: 1;
-           background: #1a1a1e;
-           border: 2px dashed #323238;
-           border-radius: 16px;
-           display: flex;
-           justify-content: center;
-           align-items: center;
-           gap: 30px;
-           position: relative;
-       }
-       .slot {
-           width: 140px;
-           height: 140px;
-           background: #25252b;
-           border: 2px solid #323238;
-           border-radius: 12px;
-           display: flex;
-           justify-content: center;
-           align-items: center;
-           text-align: center;
-           font-weight: bold;
-           padding: 10px;
-           cursor: pointer;
-           transition: 0.2s;
-           font-size: 1.1rem;
-       }
-       .slot.filled {
-           border-color: #00b37e;
-           background: #004d33;
-       }
-       .controls {
-           margin-top: 20px;
-           display: flex;
-           gap: 15px;
-           justify-content: space-between;
-       }
-       .left-controls, .right-controls {
-           display: flex;
-           gap: 15px;
-       }
-       .action-btn {
-           background: #00b37e;
-           color: white;
-           border: none;
-           padding: 12px 24px;
-           border-radius: 8px;
-           font-weight: bold;
-           cursor: pointer;
-           transition: 0.2s;
-       }
-       .action-btn:hover { background: #00875f; }
-       .action-btn.secondary { background: #29292e; border: 1px solid #323238; }
-       .action-btn.secondary:hover { background: #323238; }
-       .action-btn.danger { background: #571e22; border: 1px solid #7a282d; }
-       .action-btn.danger:hover { background: #7a282d; }
-       .message {
-           margin-top: 15px;
-           height: 24px;
-           font-size: 1rem;
-           color: #fba94c;
-       }
-   </style>
+        .elements-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-right: 5px;
+        }
+        .element-btn {
+            background: #29292e;
+            border: 1px solid #323238;
+            color: #e1e1e6;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: 0.2s;
+            font-size: 0.95rem;
+        }
+        .element-btn:hover {
+            background: #323238;
+            border-color: #00b37e;
+        }
+        .main-field {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+            position: relative;
+        }
+        .workspace {
+            flex: 1;
+            background: #1a1a1e;
+            border: 2px dashed #323238;
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            position: relative;
+        }
+        .slot {
+            width: 140px;
+            height: 140px;
+            background: #25252b;
+            border: 2px solid #323238;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-weight: bold;
+            padding: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1.1rem;
+        }
+        .slot.filled {
+            border-color: #00b37e;
+            background: #004d33;
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+        }
+        .left-controls, .right-controls {
+            display: flex;
+            gap: 15px;
+        }
+        .action-btn {
+            background: #00b37e;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .action-btn:hover { background: #00875f; }
+        .action-btn.secondary { background: #29292e; border: 1px solid #323238; }
+        .action-btn.secondary:hover { background: #323238; }
+        .action-btn.danger { background: #571e22; border: 1px solid #7a282d; }
+        .action-btn.danger:hover { background: #7a282d; }
+        .message {
+            margin-top: 15px;
+            height: 24px;
+            font-size: 1rem;
+            color: #fba94c;
+        }
+
+        /* --- МОБИЛЬНАЯ АДАПТАЦИЯ (ДЛЯ ТЕЛЕФОНОВ) --- */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column; /* Элементы идут друг под другом */
+                height: 100vh;
+                height: 100dvh; /* Корректная высота для мобильных браузеров */
+                overflow: auto;
+            }
+            .sidebar {
+                width: 100%;
+                height: 45vh; /* Половина экрана под список элементов */
+                border-right: none;
+                border-bottom: 1px solid #323238;
+                padding: 12px;
+            }
+            .main-field {
+                flex: 1;
+                height: 55vh;
+                padding: 15px;
+            }
+            .workspace {
+                gap: 15px;
+            }
+            .slot {
+                width: 105px;
+                height: 105px;
+                font-size: 0.95rem;
+            }
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .left-controls, .right-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .action-btn {
+                flex: 1;
+                padding: 10px;
+                text-align: center;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
-   <div class="sidebar">
-       <h2>Алхимия <span class="stats" id="stats">0 / 0</span></h2>
-       <input type="text" class="search-box" id="searchBox" placeholder="Поиск элементов..." oninput="filterElements()">
-       <div class="elements-list" id="elementsList"></div>
-   </div>
+    <div class="sidebar">
+        <h2>Алхимия <span class="stats" id="stats">0 / 0</span></h2>
+        <input type="text" class="search-box" id="searchBox" placeholder="Поиск элементов..." oninput="filterElements()">
+        <div class="elements-list" id="elementsList"></div>
+    </div>
 
-   <div class="main-field">
-       <div class="workspace">
-           <div class="slot" id="slot1" onclick="clearSlot(1)">Пусто</div>
-           <span style="font-size: 2rem; color: #8d8d99;">+</span>
-           <div class="slot" id="slot2" onclick="clearSlot(2)">Пусто</div>
-       </div>
-       <div class="message" id="message">Собери все элементы и построй свою вселенную!</div>
-       <div class="controls">
-           <div class="left-controls">
-               <button class="action-btn" onclick="mixElements()">Смешать</button>
-               <button class="action-btn secondary" onclick="resetWorkspace()">Очистить стол</button>
-           </div>
-           <div class="right-controls">
-               <button class="action-btn danger" onclick="resetProgress()" title="Сбросить прогресс">Сброс</button>
-           </div>
-       </div>
-   </div>
+    <div class="main-field">
+        <div class="workspace">
+            <div class="slot" id="slot1" onclick="clearSlot(1)">Пусто</div>
+            <span style="font-size: 2rem; color: #8d8d99;">+</span>
+            <div class="slot" id="slot2" onclick="clearSlot(2)">Пусто</div>
+        </div>
+        <div class="message" id="message">Собери все элементы и построй свою вселенную!</div>
+        <div class="controls">
+            <div class="left-controls">
+                <button class="action-btn" onclick="mixElements()">Смешать</button>
+                <button class="action-btn secondary" onclick="resetWorkspace()">Очистить</button>
+            </div>
+            <div class="right-controls">
+                <button class="action-btn danger" onclick="resetProgress()" title="Сбросить прогресс">Сброс</button>
+            </div>
+        </div>
+    </div>
 
 <script>
-   const elements = {
-       'Вода': { name: '💧 Вода', unlocked: true },
-       'Огонь': { name: '🔥 Огонь', unlocked: true },
-       'Земля': { name: '🌍 Земля', unlocked: true },
-       'Воздух': { name: '💨 Воздух', unlocked: true },
-       'Пар': { name: '♨️ Пар', unlocked: false },
-       'Лава': { name: '🌋 Лава', unlocked: false },
-       'Грязь': { name: '💩 Грязь', unlocked: false },
-       'Пыль': { name: '🌪️ Пыль', unlocked: false },
-       'Камень': { name: '🪨 Камень', unlocked: false },
-       'Песок': { name: '⏳ Песок', unlocked: false },
-       'Энергия': { name: '⚡ Энергия', unlocked: false },
-       'Металл': { name: '⚙️ Металл', unlocked: false },
-       'Стекло': { name: '🔍 Стекло', unlocked: false },
-       'Уголь': { name: '⬛ Уголь', unlocked: false },
-       'Алмаз': { name: '💎 Алмаз', unlocked: false },
-       'Жизнь': { name: '🌱 Жизнь', unlocked: false },
-       'Бактерия': { name: '🦠 Бактерия', unlocked: false },
-       'Трава': { name: '🌾 Трава', unlocked: false },
-       'Дерево': { name: '🌳 Дерево', unlocked: false },
-       'Цветок': { name: '🌷 Цветок', unlocked: false },
-       'Кирпич': { name: '🧱 Кирпич', unlocked: false },
-       'Дом': { name: '🏠 Дом', unlocked: false },
-       'Электричество': { name: '💡 Электричество', unlocked: false },
-       'Компьютер': { name: '💻 Компьютер', unlocked: false }
-   };
+    const elements = {
+        'Вода': { name: '💧 Вода', unlocked: true },
+        'Огонь': { name: '🔥 Огонь', unlocked: true },
+        'Земля': { name: '🌍 Земля', unlocked: true },
+        'Воздух': { name: '💨 Воздух', unlocked: true },
+        'Пар': { name: '♨️ Пар', unlocked: false },
+        'Лава': { name: '🌋 Лава', unlocked: false },
+        'Грязь': { name: '💩 Грязь', unlocked: false },
+        'Пыль': { name: '🌪️ Пыль', unlocked: false },
+        'Камень': { name: '🪨 Камень', unlocked: false },
+        'Песок': { name: '⏳ Песок', unlocked: false },
+        'Энергия': { name: '⚡ Энергия', unlocked: false },
+        'Металл': { name: '⚙️ Металл', unlocked: false },
+        'Стекло': { name: '🔍 Стекло', unlocked: false },
+        'Уголь': { name: '⬛ Уголь', unlocked: false },
+        'Алмаз': { name: '💎 Алмаз', unlocked: false },
+        'Жизнь': { name: '🌱 Жизнь', unlocked: false },
+        'Бактерия': { name: '🦠 Бактерия', unlocked: false },
+        'Трава': { name: '🌾 Трава', unlocked: false },
+        'Дерево': { name: '🌳 Дерево', unlocked: false },
+        'Цветок': { name: '🌷 Цветок', unlocked: false },
+        'Кирпич': { name: '🧱 Кирпич', unlocked: false },
+        'Дом': { name: '🏠 Дом', unlocked: false },
+        'Электричество': { name: '💡 Электричество', unlocked: false },
+        'Компьютер': { name: '💻 Компьютер', unlocked: false },
+        
+        // --- НАУКА И ФИЗИКА ---
+        'Атом': { name: '⚛️ Атом', unlocked: false },
+        'Ядро': { name: '🔘 Ядро', unlocked: false },
+        'Электрон': { name: '🔹 Электрон', unlocked: false },
+        'Протон': { name: '🔸 Протон', unlocked: false },
+        'Нейтрон': { name: '⚪ Нейтрон', unlocked: false },
+        'Молекула': { name: '⚗️ Молекула', unlocked: false },
+        'ДНК': { name: '🧬 ДНК', unlocked: false },
+        'Клетка': { name: '🟢 Клетка', unlocked: false },
+        'Вирус': { name: '🦠 Вирус', unlocked: false },
+        'Антибиотик': { name: '💊 Антибиотик', unlocked: false },
+        'Вакцина': { name: '💉 Вакцина', unlocked: false },
+        'Микроскоп': { name: '🔬 Микроскоп', unlocked: false },
+        'Телескоп': { name: '🔭 Телескоп', unlocked: false },
+        'Коллайдер': { name: '🌀 Коллайдер', unlocked: false },
+        'Плазма': { name: '🌩️ Плазма', unlocked: false },
+        'Магнит': { name: '🧲 Магнит', unlocked: false },
+        'Компас': { name: '🧭 Компас', unlocked: false },
+        'Барометр': { name: '🌡️ Барометр', unlocked: false },
+        'Радар': { name: '📡 Радар', unlocked: false },
+        'Сейсмограф': { name: '📈 Сейсмограф', unlocked: false },
 
-   const recipes = {
-       'Вода+Огонь': 'Пар',
-       'Огонь+Земля': 'Лава',
-       'Вода+Земля': 'Грязь',
-       'Воздух+Земля': 'Пыль',
-       'Лава+Воздух': 'Камень',
-       'Огонь+Воздух': 'Энергия',
-       'Вода+Камень': 'Песок',
-       'Огонь+Песок': 'Стекло',
-       'Земля+Огонь': 'Уголь',
-       'Уголь+Уголь': 'Алмаз',
-       'Грязь+Энергия': 'Жизнь',
-       'Вода+Жизнь': 'Бактерия',
-       'Земля+Жизнь': 'Трава',
-       'Трава+Земля': 'Дерево',
-       'Цветок+Вода': 'Цветок',
-       'Кирпич+Кирпич': 'Дом',
-       'Уголь+Огонь': 'Электричество',
-       'Электричество+Пластик': 'Компьютер'
-   };
+        // --- ОКРУЖАЮЩИЙ МИР И КАТАКЛИЗМЫ ---
+        'Ураган': { name: '🌀 Ураган', unlocked: false },
+        'Цунами': { name: '🌊 Цунами', unlocked: false },
+        'Землетрясение': { name: '🏚️ Землетрясение', unlocked: false },
+        'Извержение': { name: '🌋 Извержение', unlocked: false },
+        'Метеорит': { name: '☄️ Метеорит', unlocked: false },
+        'Комета': { name: '🌠 Комета', unlocked: false },
+        'Астероид': { name: '🪨 Астероид', unlocked: false },
+        'Затмение': { name: '🌑 Затмение', unlocked: false },
+        'Северное сияние': { name: '🌌 Сияние', unlocked: false },
+        'Гроза': { name: '⚡ Гроза', unlocked: false },
+        'Туман': { name: '🌁 Туман', unlocked: false },
+        'Айсберг': { name: '🧊 Айсберг', unlocked: false },
+        'Каньон': { name: '🏜️ Каньон', unlocked: false },
+        'Пещера': { name: '🕳️ Пещера', unlocked: false },
+        'Оазис': { name: '🌴 Оазис', unlocked: false },
+        'Джунгли': { name: '🌴 Джунгли', unlocked: false },
+        'Болото': { name: '🌿 Болото', unlocked: false },
+        'Тропики': { name: '🍍 Тропики', unlocked: false },
+        'Арктика': { name: '❄️ Арктика', unlocked: false },
+        'Саванна': { name: '🦁 Саванна', unlocked: false },
 
-   let selected1 = null;
-   let selected2 = null;
+        // --- ЕДА И КУЛИНАРИЯ ---
+        'Мука': { name: '🌾 Мука', unlocked: false },
+        'Хлеб': { name: '🍞 Хлеб', unlocked: false },
+        'Тесто': { name: '🥟 Тесто', unlocked: false },
+        'Сыр': { name: '🧀 Сыр', unlocked: false },
+        'Масло': { name: '🧈 Масло', unlocked: false },
+        'Яичница': { name: '🍳 Яичница', unlocked: false },
+        'Суп': { name: '🍲 Суп', unlocked: false },
+        'Салат': { name: '🥗 Салат', unlocked: false },
+        'Пицца': { name: '🍕 Пицца', unlocked: false },
+        'Бургер': { name: '🍔 Бургер', unlocked: false },
+        'Торт': { name: '🎂 Торт', unlocked: false },
+        'Шоколад': { name: '🍫 Шоколад', unlocked: false },
+        'Сахар': { name: '🍬 Сахар', unlocked: false },
+        'Какао': { name: '🌰 Какао', unlocked: false },
+        'Кофе': { name: '☕ Кофе', unlocked: false },
+        'Чай': { name: '🍵 Чай', unlocked: false },
+        'Пиво': { name: '🍺 Пиво', unlocked: false },
+        'Вино': { name: '🍷 Вино', unlocked: false },
+        'Сок': { name: '🧃 Сок', unlocked: false },
+        'Коктейль': { name: '🍸 Коктейль', unlocked: false },
 
-   function loadGame() {
-       const saved = localStorage.getItem('alchemy_unlocked');
-       if (saved) {
-           const unlockedList = JSON.parse(saved);
-           unlockedList.forEach(key => {
-               if (elements[key]) elements[key].unlocked = true;
-           });
-       }
-   }
+        // --- ОБЩЕСТВО И КУЛЬТУРА ---
+        'Школа': { name: '🏫 Школа', unlocked: false },
+        'Университет': { name: '🎓 Университет', unlocked: false },
+        'Ученик': { name: '🧑‍🎓 Ученик', unlocked: false },
+        'Ученый': { name: '👨‍🔬 Ученый', unlocked: false },
+        'Доктор': { name: '👨‍⚕️ Доктор', unlocked: false },
+        'Больница': { name: '🏥 Больница', unlocked: false },
+        'Полиция': { name: '👮 Полиция', unlocked: false },
+        'Тюрьма': { name: '🚓 Тюрьма', unlocked: false },
+        'Пожарный': { name: '🧑‍🚒 Пожарный', unlocked: false },
+        'Пожарная машина': { name: '🚒 Пожарка', unlocked: false },
+        'Почта': { name: '🏣 Почта', unlocked: false },
+        'Письмо': { name: '✉️ Письмо', unlocked: false },
+        'Деньги': { name: '💵 Деньги', unlocked: false },
+        'Магазин': { name: '🛒 Магазин', unlocked: false },
+        'Ресторан': { name: '🍽️ Ресторан', unlocked: false },
+        'Кинотеатр': { name: '🎦 Кинотеатр', unlocked: false },
+        'Фильм': { name: '🎬 Фильм', unlocked: false },
+        'Музыка': { name: '🎵 Музыка', unlocked: false },
+        'Гитара': { name: '🎸 Гитара', unlocked: false },
+        'Пианино': { name: '🎹 Пианино', unlocked: false },
+        'Художник': { name: '🎨 Художник', unlocked: false },
+        'Картина': { name: '🖼️ Картина', unlocked: false },
+        'Фотоаппарат': { name: '📷 Фотоаппарат', unlocked: false },
+        'Фотография': { name: '📸 Фотография', unlocked: false },
+        'Стадион': { name: '🏟️ Стадион', unlocked: false },
+        'Мяч': { name: '⚽ Мяч', unlocked: false },
+        'Футбол': { name: '⚽ Футбол', unlocked: false },
+        'Шахматы': { name: '♟️ Шахматы', unlocked: false },
 
-   function saveGame() {
-       const unlockedList = [];
-       for (let key in elements) {
-           if (elements[key].unlocked) unlockedList.push(key);
-       }
-       localStorage.setItem('alchemy_unlocked', JSON.stringify(unlockedList));
-   }
+        // --- ФЭНТЕЗИ И МИФЫ ---
+        'Огр': { name: '👹 Огр', unlocked: false },
+        'Гоблин': { name: '👺 Гоблин', unlocked: false },
+        'Орк': { name: '🧟‍♂️ Орк', unlocked: false },
+        'Эльф': { name: '🧝 Эльф', unlocked: false },
+        'Гном': { name: '⛏️ Гном', unlocked: false },
+        'Тролль': { name: '🧌 Тролль', unlocked: false },
+        'Русалка': { name: '🧜‍♀️ Русалка', unlocked: false },
+        'Кентавр': { name: '🐴 Кентавр', unlocked: false },
+        'Пегас': { name: '🐎✨ Пегас', unlocked: false },
+        'Кракен': { name: '🦑 Кракен', unlocked: false },
+        'Гидра': { name: '🐍🐍 Гидра', unlocked: false },
+        'Цербер': { name: '🐕‍🦺 3-главый пес', unlocked: false },
+        'Минотавр': { name: '🐂 Минотавр', unlocked: false },
+        'Валькирия': { name: '🪽 Валькирия', unlocked: false },
+        'Некромант': { name: '🧙‍♂️ Некромант', unlocked: false },
+        'Паладин': { name: '⚔️ Паладин', unlocked: false },
+        'Ассасин': { name: '🗡️ Ассасин', unlocked: false },
+        'Ниндзя': { name: '🥷 Ниндзя', unlocked: false },
+        'Самурай': { name: '⛩️ Самурай', unlocked: false },
+        'Пирамида': { name: '🔺 Пирамида', unlocked: false },
+        'Сфинкс': { name: '🦁 Сфинкс', unlocked: false },
+        'Эскалибур': { name: '🗡️ Меч в камне', unlocked: false },
+        'Ковёр-самолёт': { name: '🪄 Ковёр-самолёт', unlocked: false },
+        'Лампа Алладина': { name: '🪔 Волшебная лампа', unlocked: false },
+        'Джинн': { name: '🧞 Джинн', unlocked: false },
 
-   function updateSidebar() {
-       const list = document.getElementById('elementsList');
-       const filter = document.getElementById('searchBox').value.toLowerCase();
-       list.innerHTML = '';
-       
-       let unlockedCount = 0;
-       let totalCount = Object.keys(elements).length;
+        // --- КИБЕРПАНК И КОСМОС ---
+        'Киберимплант': { name: '🦾 Киберимплант', unlocked: false },
+        'Киборг': { name: '🤖 Киборг', unlocked: false },
+        'Экзоскелет': { name: '🦿 Экзоскелет', unlocked: false },
+        'Нейросеть': { name: '🧠 Нейросеть', unlocked: false },
+        'Виртуальная реальность': { name: '🥽 ВР', unlocked: false },
+        'Голограмма': { name: 'ışı Голограмма', unlocked: false },
+        'Летающая машина': { name: '🛸 Флаер', unlocked: false },
+        'Квантовый компьютер': { name: '💻 Квантовый ПК', unlocked: false },
+        'Антиматерия': { name: '⚛️ Антиматерия', unlocked: false },
+        'Чёрная дыра': { name: '🕳️ Чёрная дыра', unlocked: false },
+        'Телепорт': { name: '🌀 Телепорт', unlocked: false },
+        'Силовой щит': { name: '🛡️ Силовой щит', unlocked: false },
+        'Космическая станция': { name: '🛰️ МКС', unlocked: false },
+        'Лунный багги': { name: '🚙 Луноход', unlocked: false },
+        'Марсианская база': { name: '⛺ Марсианская база', unlocked: false },
+        'Терраформирование': { name: '🌍 Терраформирование', unlocked: false },
+        'Инопланетный корабль': { name: '🛸 НЛО', unlocked: false },
+        'Ксеноморф': { name: '👾 Чужой', unlocked: false },
+        'Плазмоид': { name: '💫 Плазмоид', unlocked: false },
+        'Гипердвигатель': { name: '⚙️ Гипердвигатель', unlocked: false },
+        'Звёздная система': { name: '✨ Звёздная система', unlocked: false },
+        'Галактика': { name: '🌌 Галактика', unlocked: false },
+        'Философский камень': { name: '🔴 Ф. Камень', unlocked: false },
+        'Эликсир бессмертия': { name: '🏺 Эликсир жизни', unlocked: false },
+        'Гримуар': { name: '📘 Гримуар', unlocked: false },
+        'Посох': { name: '🪄 Посох', unlocked: false },
+        'Фамильяр': { name: '🐈‍⬛ Фамильяр', unlocked: false },
+        'Некрономикон': { name: '💀 Некрономикон', unlocked: false },
+        'Голем': { name: '🗿 Голем', unlocked: false },
+        'Химера': { name: '🦁 Химера', unlocked: false },
+        'Левиафан': { name: '🐋 Левиафан', unlocked: false },
+        'Василиск': { name: '🐍 Василиск', unlocked: false }
+    };
 
-       for (let key in elements) {
-           if (elements[key].unlocked) {
-               unlockedCount++;
-               if (elements[key].name.toLowerCase().includes(filter)) {
-                   const btn = document.createElement('button');
-                   btn.className = 'element-btn';
-                   btn.innerText = elements[key].name;
-                   btn.onclick = () => selectElement(key);
-                   list.appendChild(btn);
-               }
-           }
-       }
-       document.getElementById('stats').innerText = `${unlockedCount} / ${totalCount}`;
-   }
+    const recipes = {
+        'Вода+Огонь': 'Пар',
+        'Огонь+Земля': 'Лава',
+        'Вода+Земля': 'Грязь',
+        'Воздух+Земля': 'Пыль',
+        'Лава+Воздух': 'Камень',
+        'Огонь+Воздух': 'Энергия',
+        'Вода+Камень': 'Песок',
+        'Огонь+Песок': 'Стекло',
+        'Земля+Огонь': 'Уголь',
+        'Уголь+Уголь': 'Алмаз',
+        'Грязь+Энергия': 'Жизнь',
+        'Вода+Жизнь': 'Бактерия',
+        'Земля+Жизнь': 'Трава',
+        'Трава+Земля': 'Дерево',
+        'Цветок+Вода': 'Цветок',
+        'Кирпич+Кирпич': 'Дом',
+        'Уголь+Огонь': 'Электричество',
+        'Электричество+Пластик': 'Компьютер',
 
-   function filterElements() {
-       updateSidebar();
-   }
+        // Рецепты для науки и физики
+        'Атом+Атом': 'Молекула',
+        'Молекула+Молекула': 'ДНК',
+        'ДНК+Жизнь': 'Клетка',
+        'Клетка+Бактерия': 'Вирус',
+        'Вирус+Лекарство': 'Антибиотик',
+        'Бактерия+Энергия': 'Вакцина',
+        'Стекло+Клетка': 'Микроскоп',
+        'Стекло+Звёзды': 'Телескоп',
+        'Атом+Энергия': 'Коллайдер',
+        'Электричество+Газ': 'Плазма',
+        'Железо+Электричество': 'Магнит',
+        'Магнит+Земля': 'Компас',
+        'Воздух+Давление': 'Барометр',
+        'Радио+Эхо': 'Радар',
+        'Земля+Землетрясение': 'Сейсмограф',
 
-   function selectElement(key) {
-       if (!selected1) {
-           selected1 = key;
-           document.getElementById('slot1').innerText = elements[key].name;
-           document.getElementById('slot1').classList.add('filled');
-       } else if (!selected2 && selected1 !== key) {
-           selected2 = key;
-           document.getElementById('slot2').innerText = elements[key].name;
-           document.getElementById('slot2').classList.add('filled');
-       } else {
-           selected1 = key;
-           selected2 = null;
-           document.getElementById('slot1').innerText = elements[key].name;
-           document.getElementById('slot1').classList.add('filled');
-           document.getElementById('slot2').innerText = 'Пусто';
-           document.getElementById('slot2').classList.remove('filled');
-       }
-       document.getElementById('message').innerText = '';
-   }
+        // Рецепты для природы и катаклизмов
+        'Ветер+Энергия': 'Ураган',
+        'Вода+Землетрясение': 'Цунами',
+        'Земля+Земля': 'Землетрясение',
+        'Лава+Вода': 'Извержение',
+        'Камень+Космос': 'Метеорит',
+        'Метеорит+Хвост': 'Комета',
+        'Камень+Орбита': 'Астероид',
+        'Луна+Солнце': 'Затмение',
+        'Полюс+Энергия': 'Северное сияние',
+        'Воздух+Электричество': 'Гроза',
+        'Вода+Воздух': 'Туман',
+        'Вода+Мороз': 'Айсберг',
+        'Горы+Река': 'Каньон',
+        'Камень+Вода': 'Пещера',
+        'Песок+Вода': 'Оазис',
+        'Дерево+Дерево': 'Джунгли',
+        'Грязь+Тепло': 'Болото',
+        'Тропики+Солнце': 'Тропики',
+        'Холод+Земля': 'Арктика',
+        'Трава+Жар': 'Саванна',
 
-   function clearSlot(slotNum) {
-       if (slotNum === 1) {
-           selected1 = null;
-           document.getElementById('slot1').innerText = 'Пусто';
-           document.getElementById('slot1').classList.remove('filled');
-       } else {
-           selected2 = null;
-           document.getElementById('slot2').innerText = 'Пусто';
-           document.getElementById('slot2').classList.remove('filled');
-       }
-   }
+        // Рецепты для еды
+        'Земля+Инструмент': 'Мука',
+        'Мука+Огонь': 'Хлеб',
+        'Мука+Вода': 'Тесто',
+        'Молоко+Время': 'Сыр',
+        'Молоко+Энергия': 'Масло',
+        'Яйцо+Огонь': 'Яичница',
+        'Мясо+Овощ': 'Суп',
+        'Трава+Масло': 'Салат',
+        'Тесто+Сыр': 'Пицца',
+        'Мясо+Хлеб': 'Бургер',
+        'Тесто+Сахар': 'Торт',
+        'Какао+Масло': 'Шоколад',
+        'Тростник+Огонь': 'Сахар',
+        'Какао+Вода': 'Какао',
+        'Зерна+Огонь': 'Кофе',
+        'Листья+Вода': 'Чай',
+        'Пшеница+Огонь': 'Пиво',
+        'Виноград+Время': 'Вино',
+        'Фрукт+Вода': 'Сок',
+        'Сок+Алкоголь': 'Коктейль',
 
-   function resetWorkspace() {
-       clearSlot(1);
-       clearSlot(2);
-       document.getElementById('message').innerText = '';
-   }
+        // Рецепты для профессий и общества
+        'Дети+Книга': 'Школа',
+        'Школа+Книга': 'Университет',
+        'Школа+Человек': 'Ученик',
+        'Университет+Человек': 'Ученый',
+        'Человек+Лекарство': 'Доктор',
+        'Доктор+Дом': 'Больница',
+        'Человек+Закон': 'Полиция',
+        'Полиция+Преступник': 'Тюрьма',
+        'Человек+Огонь': 'Пожарный',
+        'Пожарный+Машина': 'Пожарная машина',
+        'Дом+Бумага': 'Почта',
+        'Почта+Бумага': 'Письмо',
+        'Золото+Человек': 'Деньги',
+        'Деньги+Дом': 'Магазин',
+        'Еда+Магазин': 'Ресторан',
+        'Дом+Фильм': 'Кинотеатр',
+        'Камера+Пленка': 'Фильм',
+        'Звук+Человек': 'Музыка',
+        'Музыка+Дерево': 'Гитара',
+        'Музыка+Дом': 'Пианино',
+        'Человек+Краски': 'Художник',
+        'Художник+Холст': 'Картина',
+        'Стекло+Свет': 'Фотоаппарат',
+        'Фотоаппарат+Свет': 'Фотография',
+        'Дом+Спорт': 'Стадион',
+        'Кожа+Воздух': 'Мяч',
+        'Мяч+Человек': 'Футбол',
+        'Книга+Логика': 'Шахматы',
 
-   function mixElements() {
-       const msg = document.getElementById('message');
-       if (!selected1 || !selected2) {
-           msg.innerText = 'Выберите два элемента для смешивания!';
-           return;
-       }
+        // Рецепты для фэнтези
+        'Земля+Человек': 'Огр',
+        'Лес+Человек': 'Гоблин',
+        'Орк+Земля': 'Орк',
+        'Лес+Лук': 'Эльф',
+        'Горы+Инструмент': 'Гном',
+        'Мост+Человек': 'Тролль',
+        'Вода+Женщина': 'Русалка',
+        'Лошадь+Человек': 'Кентавр',
+        'Лошадь+Птица': 'Пегас',
+        'Океан+Чудовище': 'Кракен',
+        'Змея+Голова': 'Гидра',
+        'Собака+Земля': 'Цербер',
+        'Бык+Человек': 'Минотавр',
+        'Война+Женщина': 'Валькирия',
+        'Маг+Смерть': 'Некромант',
+        'Рыцарь+Честь': 'Паладин',
+        'Убийца+Тень': 'Ассасин',
+        'Япония+Человек': 'Ниндзя',
+        'Япония+Меч': 'Самурай',
+        'Камень+Камень': 'Пирамида',
+        'Лев+Человек': 'Сфинкс',
+        'Камень+Меч': 'Эскалибур',
+        'Ковёр+Воздух': 'Ковёр-самолёт',
+        'Лампа+Дух': 'Лампа Алладина',
+        'Лампа Алладина+Желание': 'Джинн',
 
-       const key1 = `${selected1}+${selected2}`;
-       const key2 = `${selected2}+${selected1}`;
-       let result = recipes[key1] || recipes[key2];
+        // Рецепты для киберпанка и космоса
+        'Искусственный интеллект+Кибернетика': 'Киберимплант',
+        'Человек+Киберимплант': 'Киборг',
+        'Костюм+Экзоскелет': 'Экзоскелет',
+        'Искусственный интеллект+Интернет': 'Нейросеть',
+        'Очки+ВР': 'Виртуальная реальность',
+        'Лазер+Свет': 'Голограмма',
+        'Автомобиль+Антигравитация': 'Летающая машина',
+        'Компьютер+Кристалл': 'Квантовый компьютер',
+        'Энергия+Антиматерия': 'Антиматерия',
+        'Звезда+Графитация': 'Чёрная дыра',
+        'Пространство+Портал': 'Телепорт',
+        'Энергия+Поле': 'Силовой щит',
+        'Космонавт+Станция': 'Космическая станция',
+        'Марс+Колония': 'Марсианская база',
+        'Терраформирование+Планета': 'Терраформирование',
+        'Звёздный корабль+Инопланетянин': 'Инопланетный корабль',
+        'Золото+Философский камень': 'Эликсир бессмертия',
+        'Маг+Гримуар': 'Гримуар',
+        'Магия+Земля': 'Голем',
+        'Алхимия+Золото': 'Философский камень',
+        'Океан+Чудовище': 'Кракен'
+    };
 
-       if (result && elements[result]) {
-           if (!elements[result].unlocked) {
-               elements[result].unlocked = true;
-               msg.style.color = '#00b37e';
-               msg.innerText = `🎉 Открыт новый элемент: ${elements[result].name}!`;
-               saveGame();
-               updateSidebar();
-           } else {
-               msg.style.color = '#fba94c';
-               msg.innerText = `Элемент уже открыт: ${elements[result].name}`;
-           }
-       } else {
-           msg.style.color = '#f75a68';
-           msg.innerText = '💥 Ничего не получилось... Попробуй другую комбинацию.';
-       }
-       
-       resetWorkspace();
-   }
+    let selected1 = null;
+    let selected2 = null;
 
-   function resetProgress() {
-       if (confirm('Сбросить весь прогресс?')) {
-           localStorage.removeItem('alchemy_unlocked');
-           for (let key in elements) {
-               elements[key].unlocked = ['Вода', 'Огонь', 'Земля', 'Воздух'].includes(key);
-           }
-           updateSidebar();
-           resetWorkspace();
-           document.getElementById('message').innerText = 'Прогресс сброшен.';
-       }
-   }
+    function loadGame() {
+        const saved = localStorage.getItem('alchemy_unlocked');
+        if (saved) {
+            const unlockedList = JSON.parse(saved);
+            unlockedList.forEach(key => {
+                if (elements[key]) elements[key].unlocked = true;
+            });
+        }
+    }
 
-   loadGame();
-   updateSidebar();
+    function saveGame() {
+        const unlockedList = [];
+        for (let key in elements) {
+            if (elements[key].unlocked) unlockedList.push(key);
+        }
+        localStorage.setItem('alchemy_unlocked', JSON.stringify(unlockedList));
+    }
+
+    function updateSidebar() {
+        const list = document.getElementById('elementsList');
+        const filter = document.getElementById('searchBox').value.toLowerCase();
+        list.innerHTML = '';
+        
+        let unlockedCount = 0;
+        let totalCount = Object.keys(elements).length;
+
+        for (let key in elements) {
+            if (elements[key].unlocked) {
+                unlockedCount++;
+                if (elements[key].name.toLowerCase().includes(filter)) {
+                    const btn = document.createElement('button');
+                    btn.className = 'element-btn';
+                    btn.innerText = elements[key].name;
+                    btn.onclick = () => selectElement(key);
+                    list.appendChild(btn);
+                }
+            }
+        }
+        document.getElementById('stats').innerText = `${unlockedCount} / ${totalCount}`;
+    }
+
+    function filterElements() {
+        updateSidebar();
+    }
+
+    function selectElement(key) {
+        if (!selected1) {
+            selected1 = key;
+            document.getElementById('slot1').innerText = elements[key].name;
+            document.getElementById('slot1').classList.add('filled');
+        } else if (!selected2 && selected1 !== key) {
+            selected2 = key;
+            document.getElementById('slot2').innerText = elements[key].name;
+            document.getElementById('slot2').classList.add('filled');
+        } else {
+            selected1 = key;
+            selected2 = null;
+            document.getElementById('slot1').innerText = elements[key].name;
+            document.getElementById('slot1').classList.add('filled');
+            document.getElementById('slot2').innerText = 'Пусто';
+            document.getElementById('slot2').classList.remove('filled');
+        }
+        document.getElementById('message').innerText = '';
+    }
+
+    function clearSlot(slotNum) {
+        if (slotNum === 1) {
+            selected1 = null;
+            document.getElementById('slot1').innerText = 'Пусто';
+            document.getElementById('slot1').classList.remove('filled');
+        } else {
+            selected2 = null;
+            document.getElementById('slot2').innerText = 'Пусто';
+            document.getElementById('slot2').classList.remove('filled');
+        }
+    }
+
+    function resetWorkspace() {
+        clearSlot(1);
+        clearSlot(2);
+        document.getElementById('message').innerText = '';
+    }
+
+    function mixElements() {
+        const msg = document.getElementById('message');
+        if (!selected1 || !selected2) {
+            msg.innerText = 'Выберите два элемента!';
+            return;
+        }
+
+        const key1 = `${selected1}+${selected2}`;
+        const key2 = `${selected2}+${selected1}`;
+        let result = recipes[key1] || recipes[key2];
+
+        if (result && elements[result]) {
+            if (!elements[result].unlocked) {
+                elements[result].unlocked = true;
+                msg.style.color = '#00b37e';
+                msg.innerText = `🎉 Открыт: ${elements[result].name}!`;
+                saveGame();
+                updateSidebar();
+            } else {
+                msg.style.color = '#fba94c';
+                msg.innerText = `Уже открыт: ${elements[result].name}`;
+            }
+        } else {
+            msg.style.color = '#f75a68';
+            msg.innerText = '💥 Не вышло... Попробуй другое.';
+        }
+        
+        resetWorkspace();
+    }
+
+    function resetProgress() {
+        if (confirm('Сбросить весь прогресс?')) {
+            localStorage.removeItem('alchemy_unlocked');
+            for (let key in elements) {
+                elements[key].unlocked = ['Вода', 'Огонь', 'Земля', 'Воздух'].includes(key);
+            }
+            updateSidebar();
+            resetWorkspace();
+            document.getElementById('message').innerText = 'Прогресс сброшен.';
+        }
+    }
+
+    loadGame();
+    updateSidebar();
 </script>
 
 </body>
